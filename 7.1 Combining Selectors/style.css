@@ -4,5 +4,8 @@ h1, h2{
 }
 
 .box > p {
-  color: mav;
+  color: firebrick;
+}
+.list li {
+  color: blue;
 }
