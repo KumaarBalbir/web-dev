@@ -9,3 +9,6 @@ h1, h2{
 .list li {
   color: blue;
 }
+list.done{
+  color: green;
+}
