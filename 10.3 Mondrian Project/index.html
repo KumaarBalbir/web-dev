@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mondrian Project</title>
+  <style>
+    /* 
+    Write your CSS here 
+    Gap Colour: #000
+    White: #F0F1EC
+    Red: #E72F24
+    Black: #232629
+    Blue: #004592
+    Yellow: #F9D01E
+
+    For dimensions, see dimensions.png image.
+    HINT: Remember you can't change the properties of grid lines.
+    But grid lines are transparent!
+    */
+    .grid-container {
+      display: grid;
+      grid-template-rows: 414px 295px auto;
+      grid-template-columns: 320px 351px auto;
+      grid-auto-rows: 20px;
+      grid-auto-columns: 15px;
+
+      gap: 9px;
+      width: 748px;
+      height: 748px;
+      background-color: #000;
+    }
+
+    .grid-item {
+      display: flex;
+
+    }
+
+    .item1 {
+      background-color: #E72F24;
+    }
+
+    .item2 {
+      background-color: #F0F1EC;
+      grid-column: span 2;
+    }
+
+    .item3 {
+      background-color: #F0F1EC;
+    }
+
+    .item4 {
+      background-color: #F0F1EC;
+    }
+
+    .item5 {
+      background-color: #F0F1EC;
+      grid-row: span 2;
+    }
+
+    .item6 {
+      background-color: #F0F1EC;
+    }
+
+    .child5 {
+      width: 59px;
+      background-color: #004592;
+      height: 130px;
+      border-bottom: 10px solid #000;
+
+    }
+
+    .child7A {
+      background-color: #F9D01E;
+      width: 198px;
+      border-right: 9px solid #000;
+    }
+
+    .child7B {
+      width: 153px;
+      background-color: #232629;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Write your HTML here -->
+  <div class="grid-container">
+    <div class="grid-item item1"></div>
+    <div class="grid-item item2"></div>
+    <div class="grid-item item3"></div>
+    <div class="grid-item item4"></div>
+    <div class="grid-item item5">
+      <div class="child5">
+
+      </div>
+    </div>
+    <div class="grid-item item6"></div>
+    <div class="grid-item item7">
+      <div class="child7A"></div>
+      <div class="child7B"></div>
+    </div>
+
+
+
+  </div>
+</body>
+
+</html>
