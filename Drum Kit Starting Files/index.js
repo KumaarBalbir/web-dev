@@ -1,8 +1,7 @@
 let drumsCount = document.querySelectorAll(".drum").length;
 for (let i = 0; i < drumsCount; i++) {
   document.querySelectorAll(".drum")[i].addEventListener("click", function () {
-    let drumSound = new Audio(`sounds/${this.innerHTML}.mp3`);
-    drumSound.play();
+    playSoundAndAnimation(this.innerHTML);
   });
 }
 
@@ -10,10 +9,10 @@ for (let i = 0; i < drumsCount; i++) {
   document
     .querySelectorAll(".drum")
     [i].addEventListener("keydown", function (event) {
-      playSound(event.key);
+      playSoundAndAnimation(event.key);
     });
 }
-function playSound(key) {
+function playSoundAndAnimation(key) {
   if (
     key === "w" ||
     key === "a" ||
@@ -25,6 +24,11 @@ function playSound(key) {
   ) {
     let drumSound = new Audio(`sounds/${key}.mp3`);
     drumSound.play();
+    let activeButton = document.querySelector(`.${key}`);
+    activeButton.classList.add("pressed");
+    setTimeout(function () {
+      activeButton.classList.remove("pressed");
+    }, 100);
   } else {
     alert("Please press a valid key: w, a, s, d, j, k, or l");
   }
