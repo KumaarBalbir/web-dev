@@ -1,4 +1,4 @@
-const randomName = require("sillyname");
+import generateRandom from "sillyname";
 
-let myName = randomName();
+let myName = generateRandom();
 console.log(myName);
