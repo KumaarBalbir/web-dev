@@ -54,7 +54,7 @@ app.get("/apiKey", async (req, res) => {
   res.render("index.ejs", { content: content });
 });
 
-app.get("/bearerToken", (req, res) => {
+app.get("/bearerToken", async (req, res) => {
   //TODO 5: Write your code here to hit up the /secrets/{id} endpoint
   //and get the secret with id of 42
   //HINT: This is how you can use axios to do bearer token auth:
@@ -66,6 +66,9 @@ app.get("/bearerToken", (req, res) => {
     },
   });
   */
+  let finalURL = `${API_URL}secrets/42`;
+  let content = await fetchWithBearerToken(finalURL);
+  res.render("index.ejs", { content: content });
 });
 
 async function fetchNoAuth(url) {
@@ -100,7 +103,22 @@ async function fetchBasicAuth(url) {
 async function fetchWithFilter(url) {
   try {
     const response = await axios.get(url);
-    console.log("response data: ", response.data);
+    // console.log("response data: ", response.data);
+    const data = JSON.stringify(response.data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching data:", error.message);
+    return { content: "Error fetching data." };
+  }
+}
+
+async function fetchWithBearerToken(url) {
+  try {
+    const response = await axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${myauthTOken}`,
+      },
+    });
     const data = JSON.stringify(response.data);
     return data;
   } catch (error) {
