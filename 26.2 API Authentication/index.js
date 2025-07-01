@@ -45,10 +45,13 @@ app.get("/basicAuth", async (req, res) => {
   res.render("index.ejs", { content: content });
 });
 
-app.get("/apiKey", (req, res) => {
+app.get("/apiKey", async (req, res) => {
   //TODO 4: Write your code here to hit up the /filter endpoint
   //Filter for all secrets with an embarassment score of 5 or greater
   //HINT: You need to provide a query parameter of apiKey in the request.
+  let finalURL = `${API_URL}filter?embarrassment[gte]=5&apiKey=${myapikey}`;
+  let content = await fetchWithFilter(finalURL);
+  res.render("index.ejs", { content: content });
 });
 
 app.get("/bearerToken", (req, res) => {
@@ -85,6 +88,18 @@ async function fetchBasicAuth(url) {
         password: password,
       },
     });
+    // console.log("response data: ", response.data);
+    const data = JSON.stringify(response.data);
+    return data;
+  } catch (error) {
+    console.error("Error fetching data:", error.message);
+    return { content: "Error fetching data." };
+  }
+}
+
+async function fetchWithFilter(url) {
+  try {
+    const response = await axios.get(url);
     console.log("response data: ", response.data);
     const data = JSON.stringify(response.data);
     return data;
