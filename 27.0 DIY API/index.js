@@ -13,6 +13,17 @@ app.get("/random", (req, res) => {
   res.json(jokes[randomIndex]);
 });
 
+//3. GET a jokes by filtering on the joke type
+// NOTE: order of endpoints matter. if /filter is after /:id then '/filter' never triggered.
+// since filter is assumed as id field after '/' and hence '/:id' is triggered.
+app.get("/filter", (req, res) => {
+  const type = req.query.type;
+  const filteredJokes = jokes.filter((joke) => joke.jokeType === type);
+  // const randomIndex = Math.floor(Math.random() * filteredJokes.length);
+  // const randomJoke = filteredJokes[randomIndex];
+  res.json(filteredJokes);
+});
+
 //2. GET a specific joke
 app.get("/:id", (req, res) => {
   const result = jokes.find((joke) => joke.id === parseInt(req.params.id));
@@ -22,8 +33,6 @@ app.get("/:id", (req, res) => {
     res.sendStatus(404);
   }
 });
-
-//3. GET a jokes by filtering on the joke type
 
 //4. POST a new joke
 
