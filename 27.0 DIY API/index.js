@@ -5,7 +5,8 @@ const app = express();
 const port = 3000;
 const masterKey = "4VGP2DN-6EWM4SJ-N6FGRHV-Z3PR3TT";
 
-app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json()); // to parse the incoming requests with JSON payloads
 
 //1. GET a random joke
 app.get("/random", (req, res) => {
@@ -35,6 +36,16 @@ app.get("/:id", (req, res) => {
 });
 
 //4. POST a new joke
+app.post("/", (req, res) => {
+  const newJoke = {
+    id: jokes.length + 1,
+    jokeText: req.body.jokeText,
+    jokeType: req.body.jokeType,
+  };
+  jokes.push(newJoke);
+  // res.json(newJoke);
+  res.sendStatus(201);
+});
 
 //5. PUT a joke
 
