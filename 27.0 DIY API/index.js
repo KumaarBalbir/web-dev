@@ -69,14 +69,15 @@ app.get("/:id", (req, res) => {
 });
 
 //4. POST a new joke
-app.post("/", (req, res) => {
+app.post("/", async (req, res) => {
   const newJoke = {
-    id: jokes.length + 1,
+    id: jokes.length > 0 ? Math.max(...jokes.map((joke) => joke.id)) + 1 : 1,
     jokeText: req.body.jokeText,
     jokeType: req.body.jokeType,
   };
   jokes.push(newJoke);
-  res.json(newJoke);
+  await saveJokes();
+  res.status(201).json(newJoke);
 });
 
 //5. PUT a joke
