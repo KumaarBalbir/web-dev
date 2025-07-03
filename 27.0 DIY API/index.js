@@ -129,6 +129,19 @@ app.patch("/:id", async (req, res) => {
 });
 
 //7. DELETE Specific joke
+app.delete("/:id", async (req, res) => {
+  const id = parseInt(req.params.id);
+  const index = jokes.findIndex((joke) => joke.id === id);
+  if (index !== -1) {
+    jokes.splice(index, 1);
+    await saveJokes();
+    res.sendStatus(200);
+  } else {
+    res
+      .status(404)
+      .json({ error: `Joke with id: ${id} not found. No jokes were deleted.` });
+  }
+});
 
 //8. DELETE All jokes
 
