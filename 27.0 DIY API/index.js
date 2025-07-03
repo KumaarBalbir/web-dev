@@ -81,14 +81,26 @@ app.post("/", async (req, res) => {
 });
 
 //5. PUT a joke
-app.put("/:id", (req, res) => {
-  const result = jokes.find((joke) => joke.id === parseInt(req.params.id));
-  if (result) {
-    result.jokeText = req.body.jokeText;
-    result.jokeType = req.body.jokeType;
-    res.json(result);
+app.put("/:id", async (req, res) => {
+  const id = parseInt(req.params.id);
+  const { jokeText, jokeType } = req.body;
+  if (!jokeText && !jokeType) {
+    return res
+      .status(400)
+      .json({ error: "Atleast jokeText or jokeType is required" });
+  }
+  const index = jokes.findIndex((joke) => joke.id === id);
+  if (index !== -1) {
+    if (jokeText) {
+      jokes[index].jokeText = jokeText;
+    }
+    if (jokeType) {
+      jokes[index].jokeType = jokeType;
+    }
+    await saveJokes();
+    res.json(jokes[index]);
   } else {
-    res.sendStatus(404);
+    res.sendStatus(404).json({ error: `Joke with id: ${id} not found.` });
   }
 });
 
