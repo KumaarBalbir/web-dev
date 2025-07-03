@@ -111,6 +111,16 @@ app.patch("/:id", (req, res) => {
 
 //8. DELETE All jokes
 
-app.listen(port, () => {
-  console.log(`Successfully started server on port ${port}.`);
-});
+loadJokes()
+  .then(() => {
+    app.listen(port, () => {
+      console.log(`Server is running on port ${port}`);
+    });
+  })
+  .catch((error) => {
+    console.log(
+      "Failed to start server due to initial data load error: ",
+      error
+    );
+    process.exit(1);
+  });
