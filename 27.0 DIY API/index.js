@@ -144,6 +144,11 @@ app.delete("/:id", async (req, res) => {
 });
 
 //8. DELETE All jokes
+app.delete("/", async (req, res) => {
+  jokes = [];
+  await saveJokes();
+  res.sendStatus(200);
+});
 
 loadJokes()
   .then(() => {
