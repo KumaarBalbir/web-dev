@@ -105,18 +105,26 @@ app.put("/:id", async (req, res) => {
 });
 
 //6. PATCH a joke
-app.patch("/:id", (req, res) => {
-  const result = jokes.find((joke) => joke.id === parseInt(req.params.id));
-  if (result) {
-    if (req.body.jokeText) {
-      result.jokeText = req.body.jokeText;
+app.patch("/:id", async (req, res) => {
+  const id = parseInt(req.params.id);
+  const { jokeText, jokeType } = req.body;
+  if (!jokeText && !jokeType) {
+    return res
+      .status(400)
+      .json({ error: "Atleast jokeText or jokeType is required" });
+  }
+  const index = jokes.findIndex((joke) => joke.id === id);
+  if (index !== -1) {
+    if (jokeText) {
+      jokes[index].jokeText = jokeText;
     }
-    if (req.body.jokeType) {
-      result.jokeType = req.body.jokeType;
+    if (jokeType) {
+      jokes[index].jokeType = jokeType;
     }
-    res.json(result);
+    await saveJokes();
+    res.json(jokes[index]);
   } else {
-    res.sendStatus(404);
+    res.sendStatus(404).json({ error: `Joke with id: ${id} not found.` });
   }
 });
 
