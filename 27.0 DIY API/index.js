@@ -69,7 +69,7 @@ app.get("/:id", (req, res) => {
 });
 
 //4. POST a new joke
-app.post("/", async (req, res) => {
+app.post("/jokes", async (req, res) => {
   const newJoke = {
     id: jokes.length > 0 ? Math.max(...jokes.map((joke) => joke.id)) + 1 : 1,
     jokeText: req.body.jokeText,
