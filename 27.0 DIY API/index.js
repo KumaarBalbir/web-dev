@@ -1,15 +1,15 @@
 import express from "express";
-import bodyParser from "body-parser";
 import fs from "fs/promises";
 import path from "path";
+import url from "url";
 
 const app = express();
 const port = 3000;
-const masterKey = "4VGP2DN-6EWM4SJ-N6FGRHV-Z3PR3TT";
 
 // app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json()); // to parse the incoming requests with JSON payloads
 
+const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
 const jokesFilePath = path.join(__dirname, "jokes.json");
 
 // hold jokes in memory from local file
