@@ -75,14 +75,16 @@ app.patch("/posts/:id", (req, res) => {
   if (postIndex === -1) {
     return res.status(404).json({ message: "Post not found" });
   }
-  const updatedPost = {
-    id: id,
-    title: req.body.title,
-    content: req.body.content,
-    author: req.body.author,
-    date: new Date(),
-  };
-  posts[postIndex] = updatedPost;
+  if (req.body.title) {
+    posts[postIndex].title = req.body.title;
+  }
+  if (req.body.content) {
+    posts[postIndex].content = req.body.content;
+  }
+  if (req.body.author) {
+    posts[postIndex].author = req.body.author;
+  }
+  const updatedPost = posts[postIndex];
   res.json(updatedPost);
 });
 
