@@ -68,6 +68,23 @@ app.post("/posts", async (req, res) => {
   res.status(201).json(post);
 });
 //CHALLENGE 4: PATCH a post when you just want to update one parameter
+app.patch("/posts/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  const postIndex = posts.findIndex((post) => post.id === id);
+  // update the post with id
+  if (postIndex === -1) {
+    return res.status(404).json({ message: "Post not found" });
+  }
+  const updatedPost = {
+    id: id,
+    title: req.body.title,
+    content: req.body.content,
+    author: req.body.author,
+    date: new Date(),
+  };
+  posts[postIndex] = updatedPost;
+  res.json(updatedPost);
+});
 
 //CHALLENGE 5: DELETE a specific post by providing the post id.
 
