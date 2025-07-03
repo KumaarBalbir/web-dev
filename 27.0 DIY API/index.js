@@ -6,6 +6,8 @@ import url from "url";
 const app = express();
 const port = 3000;
 
+const masterKey = "4VGP2DN-6EWM4SJ-N6FGRHV-Z3PR3TT";
+
 // app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json()); // to parse the incoming requests with JSON payloads
 
@@ -145,6 +147,10 @@ app.delete("/:id", async (req, res) => {
 
 //8. DELETE All jokes
 app.delete("/all", async (req, res) => {
+  // check if query parameter is masterKey
+  if (req.query.masterKey !== masterKey) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
   jokes = [];
   await saveJokes();
   res.sendStatus(200);
