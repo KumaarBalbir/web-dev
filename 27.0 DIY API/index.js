@@ -43,11 +43,20 @@ app.post("/", (req, res) => {
     jokeType: req.body.jokeType,
   };
   jokes.push(newJoke);
-  // res.json(newJoke);
-  res.sendStatus(201);
+  res.json(newJoke);
 });
 
 //5. PUT a joke
+app.put("/:id", (req, res) => {
+  const result = jokes.find((joke) => joke.id === parseInt(req.params.id));
+  if (result) {
+    result.jokeText = req.body.jokeText;
+    result.jokeType = req.body.jokeType;
+    res.json(result);
+  } else {
+    res.sendStatus(404);
+  }
+});
 
 //6. PATCH a joke
 
