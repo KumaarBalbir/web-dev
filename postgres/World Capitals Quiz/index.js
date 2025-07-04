@@ -1,4 +1,7 @@
 import express from "express";
+import pg from "pg";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 const port = 3000;
@@ -8,6 +11,25 @@ let quiz = [
   { country: "United Kingdom", capital: "London" },
   { country: "United States of America", capital: "New York" },
 ];
+
+const db = new pg.Client({
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_DATABASE,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
+});
+
+db.connect();
+
+db.query("SELECT * FROM capitals", (err, res) => {
+  if (err) {
+    console.error("Error executing query", err.stack);
+  } else {
+    quiz = res.rows;
+  }
+  db.end();
+});
 
 let totalCorrect = 0;
 
