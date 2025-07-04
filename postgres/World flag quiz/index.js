@@ -1,7 +1,31 @@
 import express from "express";
+import pg from "pg";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 const port = 3000;
+
+let quiz = [];
+const db = new pg.Client({
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_DATABASE,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
+});
+
+db.connect();
+
+db.query("SELECT * FROM flags", (err, res) => {
+  if (err) {
+    console.log("Error executing query", err.stack);
+  } else {
+    quiz = res.rows;
+    console.log("fetched quiz data from database: ", quiz.length);
+  }
+  db.end();
+});
 
 let totalCorrect = 0;
 
@@ -16,7 +40,7 @@ let currentQuestion = {};
 app.get("/", (req, res) => {
   totalCorrect = 0;
   nextQuestion();
-  console.log(currentQuestion);
+  console.log("current question", currentQuestion);
   res.render("index.ejs", { question: currentQuestion });
 });
 
@@ -24,7 +48,7 @@ app.get("/", (req, res) => {
 app.post("/submit", (req, res) => {
   let answer = req.body.answer.trim();
   let isCorrect = false;
-  if (currentQuestion.capital.toLowerCase() === answer.toLowerCase()) {
+  if (currentQuestion.name.toLowerCase() === answer.toLowerCase()) {
     totalCorrect++;
     console.log(totalCorrect);
     isCorrect = true;
