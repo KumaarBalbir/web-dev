@@ -46,10 +46,24 @@ app.post("/add", async (req, res) => {
       "SELECT country_code FROM countries WHERE LOWER(country_name) = $1",
       [country_name]
     );
+    let visited_countries = await getVisitedCountries();
+
     const country_code = result.rows[0]?.country_code;
     if (!country_code) {
       console.error("Country not found in database: ", country_name);
-      return res.status(404).send("Country not found");
+      return res.render("index.ejs", {
+        countries: visited_countries,
+        total: visited_countries.length,
+        error: "Country not found. Please try again.",
+      });
+    }
+    if (visited_countries.includes(country_code)) {
+      console.error("Country already visited: ", country_code);
+      return res.render("index.ejs", {
+        countries: visited_countries,
+        total: visited_countries.length,
+        error: "Country already visited. Please try again.",
+      });
     }
     await db.query("INSERT INTO visited_countries (country_code) VALUES ($1)", [
       country_code,
@@ -62,6 +76,16 @@ app.post("/add", async (req, res) => {
     res.status(500).send("Error adding country");
   }
 });
+
+async function getVisitedCountries() {
+  try {
+    const result = await db.query("SELECT country_code FROM visited_countries");
+    return result.rows.map((row) => row.country_code);
+  } catch (error) {
+    console.error("Error fetching visited countries: ", error.stack);
+    return [];
+  }
+}
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
