@@ -19,6 +19,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
+let currentUserId = 1; // set it dynamically based on which user is selected
 async function checkVisisted() {
   const result = await db.query("SELECT country_code FROM visited_countries");
   let countries = [];
@@ -51,8 +52,8 @@ app.post("/add", async (req, res) => {
     const countryCode = data.country_code;
     try {
       await db.query(
-        "INSERT INTO visited_countries (country_code) VALUES ($1)", // TODO: how to add country for specific user?
-        [countryCode]
+        "INSERT INTO visited_countries (country_code, user_id) VALUES ($1, $2)",
+        [countryCode, currentUserId]
       );
       res.redirect("/");
     } catch (err) {
@@ -74,6 +75,7 @@ app.post("/user", async (req, res) => {
     const visitedCountries = await getVisitedByUser(userId);
     console.log("visited countries", visitedCountries);
     const user = users.find((user) => user.id == userId);
+    currentUserId = userId;
     res.render("index.ejs", {
       countries: visitedCountries,
       total: visitedCountries.length,
