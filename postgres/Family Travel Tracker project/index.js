@@ -83,7 +83,7 @@ app.post("/user", async (req, res) => {
       color: user.color,
     });
   }
-  if (req.body.new) {
+  if (req.body.add) {
     // the new user button was clicked
     res.render("new.ejs");
   }
