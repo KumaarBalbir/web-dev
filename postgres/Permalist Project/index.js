@@ -21,12 +21,25 @@ app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-let items = [
-  { id: 1, title: "Buy milk" },
-  { id: 2, title: "Finish homework" },
-];
+// let items = [
+//   { id: 1, title: "Buy milk" },
+//   { id: 2, title: "Finish homework" },
+// ];
 
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
+  let items = [];
+  try {
+    const result = await db.query("SELECT * FROM items ORDER BY id ASC");
+    if (result) {
+      items = result.rows.map((row) => {
+        return { id: row.id, title: row.title };
+      });
+    } else {
+      console.log("empty todo list");
+    }
+  } catch (err) {
+    console.log("error fetching todo lists from db:", err);
+  }
   res.render("index.ejs", {
     listTitle: "Today",
     listItems: items,
