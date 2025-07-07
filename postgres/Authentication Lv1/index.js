@@ -37,12 +37,35 @@ app.post("/register", async (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
   console.log(`Username: ${username}, Password: ${password}`);
+  try {
+    await db.query("INSERT INTO users (username, password) VALUES ($1, $2)", [
+      username,
+      password,
+    ]);
+    res.redirect("/login");
+  } catch (err) {
+    console.log("Error registering user:", err);
+  }
 });
 
 app.post("/login", async (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
   console.log(`Username: ${username}, Password: ${password}`);
+  try {
+    const result = await db.query(
+      "SELECT username, password FROM users WHERE username = $1 AND password = $2",
+      [username, password]
+    );
+    if (result.rows.length > 0) {
+      res.redirect("/");
+    } else {
+      res.status(401).send("Invalid username or password");
+    }
+  } catch (err) {
+    console.log("Error logging in:", err);
+    res.status(500).send("Internal server error");
+  }
 });
 
 app.listen(port, () => {
