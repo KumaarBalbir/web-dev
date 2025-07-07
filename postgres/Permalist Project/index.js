@@ -82,3 +82,10 @@ app.post("/delete", async (req, res) => {
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
+
+process.on("SIGINT", async () => {
+  console.log("Closing database connection...");
+  await db.end();
+  console.log("Database connection closed.");
+  process.exit(0);
+});
