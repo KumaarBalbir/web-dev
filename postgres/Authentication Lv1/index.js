@@ -36,7 +36,7 @@ app.get("/register", (req, res) => {
 app.post("/register", async (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
-  console.log(`Username: ${username}, Password: ${password}`);
+
   let users = [];
   try {
     const result = await db.query("SELECT email FROM users");
@@ -63,7 +63,6 @@ app.post("/register", async (req, res) => {
 app.post("/login", async (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
-  console.log(`Username: ${username}, Password: ${password}`);
   try {
     const result = await db.query(
       "SELECT email, password FROM users WHERE email = $1 AND password = $2",
