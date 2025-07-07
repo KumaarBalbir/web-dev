@@ -21,12 +21,8 @@ app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-// let items = [
-//   { id: 1, title: "Buy milk" },
-//   { id: 2, title: "Finish homework" },
-// ];
-
 app.get("/", async (req, res) => {
+  // Read
   let items = [];
   try {
     const result = await db.query("SELECT * FROM items ORDER BY id ASC");
@@ -47,6 +43,7 @@ app.get("/", async (req, res) => {
 });
 
 app.post("/add", async (req, res) => {
+  // CREATE
   const item = req.body.newItem;
   try {
     await db.query("INSERT INTO items (title) VALUES ($1)", [item]);
@@ -56,9 +53,23 @@ app.post("/add", async (req, res) => {
   res.redirect("/");
 });
 
-app.post("/edit", (req, res) => {});
+app.post("/edit", async (req, res) => {
+  // UPDATE
+  const updatedItemTitle = req.body.updatedItemTitle;
+  const itemId = req.body.updatedItemId;
+  try {
+    await db.query("UPDATE items SET title = $1 WHERE id = $2", [
+      updatedItemTitle,
+      itemId,
+    ]);
+  } catch (err) {
+    console.log("error updating item in db:", err);
+  }
+  res.redirect("/");
+});
 
 app.post("/delete", async (req, res) => {
+  // DELETE
   const itemId = req.body.deleteItemId;
   try {
     await db.query("DELETE FROM items WHERE id = $1", [itemId]);
