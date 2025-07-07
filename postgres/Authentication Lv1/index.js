@@ -58,7 +58,7 @@ app.post("/login", async (req, res) => {
       [username, password]
     );
     if (result.rows.length > 0) {
-      res.redirect("/");
+      res.render("secrets.ejs");
     } else {
       res.status(401).send("Invalid username or password");
     }
