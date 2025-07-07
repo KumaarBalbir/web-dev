@@ -54,7 +54,7 @@ app.post("/register", async (req, res) => {
       username,
       password,
     ]);
-    res.redirect("/");
+    res.render("secrets.ejs");
   } catch (err) {
     console.log("Error registering user:", err);
   }
