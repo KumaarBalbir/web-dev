@@ -9,7 +9,7 @@ const port = 3000;
 const db = new pg.Client({
   user: process.env.DB_USER,
   host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
+  database: process.env.DB_DATABASE,
   password: process.env.DB_PASSWORD,
   port: process.env.DB_PORT,
 });
@@ -38,11 +38,11 @@ app.post("/register", async (req, res) => {
   const password = req.body.password;
   console.log(`Username: ${username}, Password: ${password}`);
   try {
-    await db.query("INSERT INTO users (username, password) VALUES ($1, $2)", [
+    await db.query("INSERT INTO users(email, password) VALUES ($1, $2)", [
       username,
       password,
     ]);
-    res.redirect("/login");
+    res.redirect("/");
   } catch (err) {
     console.log("Error registering user:", err);
   }
