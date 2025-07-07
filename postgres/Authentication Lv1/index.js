@@ -37,6 +37,18 @@ app.post("/register", async (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
   console.log(`Username: ${username}, Password: ${password}`);
+  let users = [];
+  try {
+    const result = await db.query("SELECT email FROM users");
+    users = result.rows.map((row) => row.email);
+  } catch (err) {
+    console.log("Error in fetching users data");
+  }
+  if (users.includes(username)) {
+    console.log("User already exists");
+    res.send("User already exists, try logging in.");
+    return;
+  }
   try {
     await db.query("INSERT INTO users(email, password) VALUES ($1, $2)", [
       username,
