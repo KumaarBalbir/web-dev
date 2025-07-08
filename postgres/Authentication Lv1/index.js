@@ -1,10 +1,12 @@
 import express from "express";
 import pg from "pg";
+import bcrypt from "bcrypt";
 import dotenv from "dotenv";
 dotenv.config();
 
 const app = express();
 const port = 3000;
+const saltRounds = 5;
 
 const db = new pg.Client({
   user: process.env.DB_USER,
@@ -50,9 +52,11 @@ app.post("/register", async (req, res) => {
     return;
   }
   try {
+    // Hash the password before storing it
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
     await db.query("INSERT INTO users(email, password) VALUES ($1, $2)", [
       username,
-      password,
+      hashedPassword,
     ]);
     res.render("secrets.ejs");
   } catch (err) {
@@ -62,16 +66,23 @@ app.post("/register", async (req, res) => {
 
 app.post("/login", async (req, res) => {
   const username = req.body.username;
-  const password = req.body.password;
+  const LoginPassword = req.body.password;
+  const hashedPassword = await bcrypt.hash(LoginPassword, saltRounds);
   try {
     const result = await db.query(
-      "SELECT email, password FROM users WHERE email = $1 AND password = $2",
-      [username, password]
+      "SELECT password FROM users WHERE email = $1",
+      [username]
     );
     if (result.rows.length > 0) {
-      res.render("secrets.ejs");
+      const storedPassword = result.rows[0].password;
+      const isMatch = await bcrypt.compare(LoginPassword, storedPassword);
+      if (isMatch) {
+        res.render("secrets.ejs");
+      } else {
+        res.status(401).send("Invalid username or password");
+      }
     } else {
-      res.status(401).send("Invalid username or password");
+      res.status(404).send("User not found");
     }
   } catch (err) {
     console.log("Error logging in:", err);
