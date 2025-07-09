@@ -30,6 +30,11 @@ app.use(
   })
 );
 
+//initialize passport middleware
+// Note: the session middleware (declared above) must come before passport middleware
+app.use(passport.initialize()); //
+app.use(passport.session());
+
 app.get("/", (req, res) => {
   res.render("home.ejs");
 });
