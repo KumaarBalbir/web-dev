@@ -80,6 +80,16 @@ app.get(
   })
 );
 
+app.get("/logout", (req, res) => {
+  req.logout((err) => {
+    if (err) {
+      console.error("Logout error:", err);
+      return res.status(500).send("Logout failed");
+    }
+    res.redirect("/");
+  });
+});
+
 app.post(
   "/login",
   passport.authenticate("local", {
