@@ -1,5 +1,8 @@
 import express from "express";
 import pg from "pg";
+import bcrypt from "bcrypt";
+import passport from "passport";
+import session from "express-session";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -18,6 +21,14 @@ app.use(express.json());
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
+
+app.use(
+  session({
+    secret: "MYSECRETWORLD", // sign the session cookie (encryption key for session)
+    resave: false, // don't save session if unmodified
+    saveUninitialized: true, // save a new session even if it is uninitialized
+  })
+);
 
 app.get("/", (req, res) => {
   res.render("home.ejs");
