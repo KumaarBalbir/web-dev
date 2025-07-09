@@ -28,6 +28,10 @@ app.use(
     secret: process.env.SESSION_SECRET, // sign the session cookie (encryption key for session)
     resave: false, // don't save session if unmodified
     saveUninitialized: true, // save a new session even if it is uninitialized
+    cookie: {
+      secure: false, // set to true if using HTTPS
+      maxAge: 24 * 60 * 60 * 1000, // session expires after 1 day
+    },
   })
 );
 
