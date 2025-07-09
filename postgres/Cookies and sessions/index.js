@@ -25,7 +25,7 @@ app.use(express.static("public")); // serve static files from the public directo
 
 app.use(
   session({
-    secret: "MYSECRETWORLD", // sign the session cookie (encryption key for session)
+    secret: process.env.SESSION_SECRET, // sign the session cookie (encryption key for session)
     resave: false, // don't save session if unmodified
     saveUninitialized: true, // save a new session even if it is uninitialized
   })
