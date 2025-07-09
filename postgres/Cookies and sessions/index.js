@@ -3,6 +3,7 @@ import pg from "pg";
 import bcrypt from "bcrypt";
 import passport from "passport";
 import session from "express-session";
+import { Strategy as LocalStrategy } from "passport-local";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -17,10 +18,10 @@ const db = new pg.Client({
   port: process.env.DB_PORT,
 });
 db.connect();
-app.use(express.json());
-app.set("view engine", "ejs");
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static("public"));
+app.use(express.json()); // parse application/json
+app.set("view engine", "ejs"); // set EJS as the templating engine
+app.use(express.urlencoded({ extended: true })); // parse application/x-www-form-urlencoded (parse form submissions)
+app.use(express.static("public")); // serve static files from the public directory
 
 app.use(
   session({
