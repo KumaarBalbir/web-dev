@@ -40,6 +40,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+// Passport Local Strategy for user authentication
 passport.use(
   new LocalStrategy(async (username, password, done) => {
     try {
