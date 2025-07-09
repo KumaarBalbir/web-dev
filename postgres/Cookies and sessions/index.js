@@ -9,6 +9,7 @@ dotenv.config();
 
 const app = express();
 const port = 3000;
+const saltRounds = 5;
 
 const db = new pg.Client({
   user: process.env.DB_USER,
@@ -110,12 +111,19 @@ app.post("/register", async (req, res) => {
     if (checkResult.rows.length > 0) {
       res.send("Email already exists. Try logging in.");
     } else {
+      // Hash the password before storing it
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
       const result = await db.query(
-        "INSERT INTO users (email, password) VALUES ($1, $2)",
-        [email, password]
+        "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *",
+        [email, hashedPassword]
       );
-      console.log(result);
-      res.render("secrets.ejs");
+      const user = result.rows[0];
+      req.login(user, (err) => {
+        if (err) {
+          console.log(err);
+        }
+        res.redirect("/secrets");
+      });
     }
   } catch (err) {
     console.log(err);
