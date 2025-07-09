@@ -62,6 +62,22 @@ passport.use(
   })
 );
 
+// Passport requires serialization and deserialization of user
+// information to manage sessions. Serialization saves user data (usually the user ID)
+// to the session, while deserialization retrieves it for use in requests.
+passport.serializeUser((user, done) => {
+  done(null, user.id); // store only the user ID in the session
+});
+passport.deserializeUser(async (userId, done) => {
+  try {
+    const user = await findUserById(userId);
+    done(null, user); // // 'user' object is attached to req.user
+  } catch (err) {
+    console.log("Error in deserializeUser: ", err.stack);
+    done(err);
+  }
+});
+
 app.get("/", (req, res) => {
   res.render("home.ejs");
 });
@@ -134,7 +150,19 @@ async function findUserByUsername(username) {
     ]);
     return result.rows[0];
   } catch (err) {
-    console.log("Error finding user: ", err.stack);
+    console.log("Error finding user by username: ", err.stack);
+    return null;
+  }
+}
+
+async function findUserById(userId) {
+  try {
+    const result = await db.query("SELECT * FROM users WHERE id = $1", [
+      userId,
+    ]);
+    return result.rows[0];
+  } catch (err) {
+    console.log("Error finding user by Id: ", err.stack);
     return null;
   }
 }
