@@ -32,7 +32,7 @@ app.use(
 
 //initialize passport middleware
 // Note: the session middleware (declared above) must come before passport middleware
-app.use(passport.initialize()); //
+app.use(passport.initialize());
 app.use(passport.session());
 
 app.get("/", (req, res) => {
@@ -44,7 +44,11 @@ app.get("/login", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-  res.render("register.ejs");
+  if (req.isAuthenticated()) {
+    res.render("secrets.ejs");
+  } else {
+    res.redirect("/login");
+  }
 });
 
 app.post("/register", async (req, res) => {
