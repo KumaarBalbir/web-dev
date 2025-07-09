@@ -87,10 +87,14 @@ app.get("/login", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
+  res.render("register.ejs");
+});
+
+app.get("/secrets", (req, res) => {
   if (req.isAuthenticated()) {
-    res.render("secrets.ejs");
+    res.render("secrets.ejs"); // render secrets page if user is authenticated
   } else {
-    res.redirect("/login");
+    res.redirect("/login"); // redirect to login if not authenticated
   }
 });
 
