@@ -40,6 +40,27 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
+passport.use(
+  new LocalStrategy(async (username, password, done) => {
+    try {
+      const user = await findUserByUsername(username);
+      if (user) {
+        const match = await bcrypt.compare(password, user.password);
+        if (match) {
+          return done(null, user); // user authenticated successfully
+        } else {
+          return done(null, false, { message: "Incorrect password." });
+        }
+      } else {
+        return done(null, false, { message: "User not found." });
+      }
+    } catch (err) {
+      console.log("Error in LocalStrategy: ", err.stack);
+      return done(err);
+    }
+  })
+);
+
 app.get("/", (req, res) => {
   res.render("home.ejs");
 });
@@ -104,6 +125,18 @@ app.post("/login", async (req, res) => {
     console.log(err);
   }
 });
+
+async function findUserByUsername(username) {
+  try {
+    const result = await db.query("SELECT * FROM users WHERE email = $1", [
+      username,
+    ]);
+    return result.rows[0];
+  } catch (err) {
+    console.log("Error finding user: ", err.stack);
+    return null;
+  }
+}
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
