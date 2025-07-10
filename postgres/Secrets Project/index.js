@@ -141,6 +141,23 @@ app.post("/register", async (req, res) => {
 
 //TODO: Create the post route for submit.
 //Handle the submitted data and add it to the database
+app.post("/submit", async (req, res) => {
+  const secret = req.body.secret;
+  const email = req.user.email;
+  try {
+    const result = await db.query(
+      "UPDATE users SET secrets = $1 WHERE email = $2 RETURNING *",
+      [secret, email]
+    );
+    if (result.rows.length > 0) {
+      console.log("Secret submitted successfully:", result.rows[0]);
+      res.redirect("/secrets");
+    }
+  } catch (error) {
+    console.error("Error submitting secret:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
 
 passport.use(
   "local",
